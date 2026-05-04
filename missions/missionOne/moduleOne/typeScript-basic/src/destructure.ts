@@ -1,4 +1,4 @@
-// object destructure 
+// object destructure  
 const user = {
     name: {
         firstName: "mohammad",
