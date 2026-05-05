@@ -31,7 +31,7 @@ const student3 = {
     name: "tax",
     id: 2,
     hasBycycle: false
-} 
+}
 
 const result = addStudentToCourse(student2);
 console.log(result);
