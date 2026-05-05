@@ -28,13 +28,12 @@ const user: User = {
         city: "dhaka"
     }
 }
-
 const result1 = getPropertyFromObj(user, "id");
 console.log(result1);
+
 
 const product = {
     brand: "hp",
 }
-
 const result2 = getPropertyFromObj(product, "brand");
 console.log(result2);
