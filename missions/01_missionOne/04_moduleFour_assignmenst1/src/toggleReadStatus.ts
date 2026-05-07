@@ -13,3 +13,28 @@ toggleReadStatus(myBook);
   isRead: true
 }
 */
+
+interface Book {
+  title: string;
+  author: string;
+  publishedYear: number;
+}
+
+interface isRead extends Book {
+  isRead: boolean;
+}
+
+const toggleReadStatus = (book: Book): isRead => {
+  return {
+    ...book,
+    isRead: true,
+  };
+};
+
+// const myBook = {
+//   title: "TypeScript Guide",
+//   author: "Jane Doe",
+//   publishedYear: 2024,
+// };
+
+// console.log(toggleReadStatus(myBook));
