@@ -1,17 +1,22 @@
 [
   {
     "id": 1,
-    "name": "Keyboard",
-    "price": 2500
+    "name": "Laptop",
+    "price": 850
   },
   {
     "id": 2,
-    "name": "Mouse",
-    "price": 1200
+    "name": "Smartphone",
+    "price": 450
   },
   {
     "id": 3,
-    "name": "Monitor",
-    "price": 15000
+    "name": "Headphones",
+    "price": 120
+  },
+  {
+    "id": 1780933643122,
+    "name": "computer-2",
+    "price": 580
   }
 ]
