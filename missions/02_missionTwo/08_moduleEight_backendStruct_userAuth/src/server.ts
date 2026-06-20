@@ -1,14 +1,15 @@
 import express, { type Application, type Request, type Response } from "express"
 import { Pool, Result } from "pg"
+import config from "./config";
 
 const app: Application = express()
-const port = 5000
+const port = config.port
 
 // [middler]
 app.use(express.json());
 
 const pool = new Pool({
-    connectionString: "postgresql://neondb_owner:npg_VbM2sOLej6qm@ep-rapid-pine-ahv6dr05-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+    connectionString: config.connection_string,
 });
 
 const initializeDataBase = async () => {
@@ -35,6 +36,9 @@ const initializeDataBase = async () => {
     }
 
 }
+
+// console.log("PORT:", config.port);
+// console.log("CONNECTION:", config.connection_string);
 initializeDataBase();
 
 // [get method]
@@ -145,10 +149,10 @@ app.put("/api/users/:id", async (req: Request, res: Response) => {
         const result = await pool.query(
             `
         UPDATE users 
-        SET name = $1, 
-        password = $2,
-        age = $3,
-        is_active = $4
+        SET name = COALESCE ($1, name), 
+        password = COALESCE ($2,password),
+        age = COALESCE ($3,age),
+        is_active = COALESCE ($4,is_active)
         WHERE id = $5 
         RETURNING *
         `, [name, password, age, is_active, id]
@@ -176,6 +180,41 @@ app.put("/api/users/:id", async (req: Request, res: Response) => {
         })
     }
 
+})
+
+// [delete method]
+app.delete("/api/users/:id", async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    try {
+
+        const result = await pool.query(
+            `
+            DELETE FROM users WHERE id = $1
+            `, [id]
+        )
+
+        if (result.rowCount === 0) {
+            res.status(404).json({
+                success: false,
+                message: " user not found! :( ",
+                data: {}
+            })
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "user deleted successfully! :)",
+            data: {}
+        })
+
+    } catch (error: any) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+            error: error
+        })
+    }
 })
 
 app.listen(port, () => {
