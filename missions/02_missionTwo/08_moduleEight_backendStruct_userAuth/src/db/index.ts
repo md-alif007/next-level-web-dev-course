@@ -28,7 +28,7 @@ export const initializeDataBase = async () => {
             `
                 CREATE TABLE IF NOT EXISTS profiles
                 (
-                    id SELECT PRIMARY KEY,
+                    id SERIAL PRIMARY KEY,
                     user_id INT UNIQUE REFERENCES users(id) ON DELETE CASCADE,
                     
                     bio TEXT,
