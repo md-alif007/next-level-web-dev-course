@@ -1,19 +1,25 @@
-import type { Request, Response } from "express";
+import { json, type Request, type Response } from "express";
 import { profileService } from "./profile.service";
 
 const createProfile = async (req: Request, res: Response) => {
-    try {
-        const result = await profileService.createProfileIntoDB();
+  try {
+    const result = await profileService.createProfileIntoDB(req.body);
 
-    } catch (error: any) {
-        res.status(500).json({
-            success: false,
-            message: error.message,
-            error: error
-        });
-    }
+    (res.status(201).
+      json({
+        success: true,
+        message: "profile created successfully",
+        data: result.rows[0],
+      }));
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      error: error,
+    });
+  }
 };
 
 export const profileController = {
-    createProfile
-}
+  createProfile,
+};
