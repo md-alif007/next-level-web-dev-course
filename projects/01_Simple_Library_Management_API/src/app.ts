@@ -25,3 +25,4 @@ app.get("/", async (req: Request, res: Response) => {
 
 app.use("/api/users", userRoute);
 
+export default app;
