@@ -6,6 +6,7 @@ import express, {
 import { Pool } from "pg";
 import { config } from "./config/config";
 import { userRoute } from "./modules/user/user.route";
+import { profileRoute } from "./modules/profile/profile.route";
 
 const app: Application = express();
 const port = config.port;
@@ -23,6 +24,10 @@ app.get("/", async (req: Request, res: Response) => {
   });
 });
 
+// user section
 app.use("/api/users", userRoute);
+
+// profiles section
+app.use("/api/profile",profileRoute )
 
 export default app;
