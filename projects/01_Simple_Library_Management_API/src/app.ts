@@ -7,6 +7,7 @@ import { Pool } from "pg";
 import { config } from "./config/config";
 import { userRoute } from "./modules/user/user.route";
 import { profileRoute } from "./modules/profile/profile.route";
+import { bookRoute } from "./modules/book/book.route";
 
 const app: Application = express();
 const port = config.port;
@@ -28,6 +29,9 @@ app.get("/", async (req: Request, res: Response) => {
 app.use("/api/users", userRoute);
 
 // profiles section
-app.use("/api/profile",profileRoute )
+app.use("/api/profile", profileRoute);
+
+// book section
+app.use("/api/books", bookRoute);
 
 export default app;

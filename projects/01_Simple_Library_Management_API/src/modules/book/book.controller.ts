@@ -1,12 +1,13 @@
 import type { Request, Response } from "express";
-import { profileService } from "./profile.service";
+import { bookService } from "./book.service";
 
-// post
-const createProfile = async (req: Request, res: Response) => {
+// post method
+const postBook = async (req: Request, res: Response) => {
+  const { title, author, genre, published_year, available } = req.body;
   try {
-    const result = await profileService.createProfileIntoDB(req.body);
+    const result = await bookService.postBookIntoDB(req.body);
     res.status(201).json({
-      message: "profile created successfully:)",
+      message: "book created successfully :)",
       data: result.rows[0],
     });
   } catch (error: any) {
@@ -17,12 +18,12 @@ const createProfile = async (req: Request, res: Response) => {
   }
 };
 
-// get
-const getProfile = async (req: Request, res: Response) => {
+// get method
+const getBook = async (req: Request, res: Response) => {
   try {
-    const result = await profileService.getProfileFromDB();
+    const result = await bookService.getBookFromDB();
     res.status(201).json({
-      message: "profile retrived successfully:)",
+      message: "books retrived successfully :)",
       data: result.rows,
     });
   } catch (error: any) {
@@ -33,20 +34,20 @@ const getProfile = async (req: Request, res: Response) => {
   }
 };
 
-// get single profile
-const getSingleProfile = async (req: Request, res: Response) => {
+// get single Book
+const getSingleBook = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    const result = await profileService.getSingleProfileFromDB(id as string);
+    const result = await bookService.getSingleBookFromDB(id as string);
 
     if (result.rows.length === 0) {
       res.status(404).json({
-        message: "user not found:(",
+        message: "book not found:(",
         data: {},
       });
     }
     res.status(201).json({
-      message: "profile retrived successfully:)",
+      message: "book retrived successfully :)",
       data: result.rows[0],
     });
   } catch (error: any) {
@@ -57,24 +58,21 @@ const getSingleProfile = async (req: Request, res: Response) => {
   }
 };
 
-// update profile
-const updateProfile = async (req: Request, res: Response) => {
+// put method
+const updateBook = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { bio, address, gender, phone } = req.body;
+  const { title, author, genre, published_year, available } = req.body;
   try {
-    const result = await profileService.updateProfileIntoDB(
-      req.body,
-      id as string,
-    );
+    const result = await bookService.updateBookFromDB(req.body, id as string);
 
     if (result.rows.length === 0) {
       res.status(404).json({
-        message: "user not found:(",
+        message: "book not found:(",
         data: {},
       });
     }
     res.status(201).json({
-      message: "profile updated successfully:)",
+      message: "book updated successfully :)",
       data: result.rows[0],
     });
   } catch (error: any) {
@@ -85,11 +83,11 @@ const updateProfile = async (req: Request, res: Response) => {
   }
 };
 
-// delete profile
-const deleteProfile = async (req: Request, res: Response) => {
+// delete method
+const deleteBook = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    const result = await profileService.deleteProfileFromDB(id as string);
+    const result = await bookService.deleteBookFromDB(id as string);
 
     if (result.rowCount === 0) {
       res.status(404).json({
@@ -98,7 +96,7 @@ const deleteProfile = async (req: Request, res: Response) => {
       });
     }
     res.status(201).json({
-      message: "profile deleted successfully:)",
+      message: "book delete successfully :)",
       data: {},
     });
   } catch (error: any) {
@@ -109,10 +107,10 @@ const deleteProfile = async (req: Request, res: Response) => {
   }
 };
 
-export const profileController = {
-  createProfile,
-  getProfile,
-  getSingleProfile,
-  updateProfile,
-  deleteProfile,
+export const bookController = {
+  postBook,
+  getBook,
+  getSingleBook,
+  updateBook,
+  deleteBook,
 };
