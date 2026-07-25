@@ -4,6 +4,7 @@ import { usersService } from "./user.service";
 // post method
 const createUsers = async (req: Request, res: Response) => {
   const { name, email, age, password } = req.body;
+
   try {
     const result = await usersService.creatUsersIntoDB(req.body);
 
@@ -26,6 +27,14 @@ const getUsers = async (req: Request, res: Response) => {
   try {
     const result = await usersService.getUserFromDB();
 
+    if (result.rows.length === 0) {
+      res.status(500).json({
+        success: false,
+        message: "user not found",
+        data: {},
+      });
+    }
+
     res.status(200).json({
       success: true,
       message: "users retrived successfully",
@@ -44,9 +53,16 @@ const getUsers = async (req: Request, res: Response) => {
 const getSingleUser = async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const result = await usersService.getSingleUserFromDB(id as string);
-
   try {
+    const result = await usersService.getSingleUserFromDB(id as string);
+
+    if (result.rows.length === 0) {
+      res.status(500).json({
+        success: false,
+        message: "user not found",
+        data: {},
+      });
+    }
     res.status(200).json({
       success: true,
       message: "user retrived successfully",
@@ -66,8 +82,16 @@ const updateUser = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { name, email, password, is_active, age } = req.body;
 
-  const result = await usersService.updateUserIntoDB(id as string, req.body);
   try {
+    const result = await usersService.updateUserIntoDB(id as string, req.body);
+
+    if (result.rows.length === 0) {
+      res.status(500).json({
+        success: false,
+        message: "user not found",
+        data: {},
+      });
+    }
     res.status(200).json({
       success: true,
       message: "user updated successfully",
@@ -85,10 +109,15 @@ const updateUser = async (req: Request, res: Response) => {
 // delete user
 const deleteUser = async (req: Request, res: Response) => {
   const { id } = req.params;
-
-  const result = await usersService.delteUserFronDB(id as string);
-
   try {
+    const result = await usersService.delteUserFronDB(id as string);
+    if (result.rowCount === 0) {
+      res.status(500).json({
+        success: false,
+        message: "user not found",
+        data: {},
+      });
+    }
     res.status(200).json({
       success: true,
       message: "user deleted successfully",
@@ -103,11 +132,10 @@ const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
-
 export const usersController = {
   createUsers,
   getUsers,
   getSingleUser,
   updateUser,
-  deleteUser
+  deleteUser,
 };

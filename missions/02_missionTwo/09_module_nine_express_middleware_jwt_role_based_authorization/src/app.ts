@@ -3,7 +3,8 @@ import express, {
   type Request,
   type Response,
 } from "express";
-import { usersRouter } from "./users/user.route";
+import { usersRouter } from "./modules/users/user.route";
+import { profilesRoute } from "./modules/profiles/profiles.route";
 
 const app: Application = express();
 const port = 5000;
@@ -17,6 +18,7 @@ app.get("/", (req: Request, res: Response) => {
   });
 });
 
-app.use("/api/users" , usersRouter)
+app.use("/api/users", usersRouter);
+app.use("/api/profiles", profilesRoute);
 
 export default app;
