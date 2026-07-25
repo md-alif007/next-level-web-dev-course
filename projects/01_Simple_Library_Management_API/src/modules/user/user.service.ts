@@ -1,9 +1,11 @@
 import { pool } from "../../database";
 import type { IUser } from "./user.interface";
+import bcrypt from "bcryptjs";
 
 // post method
 const createUserIntoDB = async (payLoad: any) => {
   const { name, gmail, password, age } = payLoad;
+  const hashPassword = await bcrypt.hash(password, 10);
   const result = await pool.query(
     `
       INSERT INTO 
@@ -11,8 +13,10 @@ const createUserIntoDB = async (payLoad: any) => {
       VALUES($1,$2,$3,$4)
       RETURNING *
       `,
-    [name, gmail, password, age],
+    [name, gmail, hashPassword, age],
   );
+
+  delete result.rows[0].password;
   return result;
 };
 
@@ -23,6 +27,10 @@ const getUsersFromDB = async () => {
         SELECT * FROM users
       `,
   );
+
+  result.rows.forEach((user) => {
+    delete user.password;
+  });
   return result;
 };
 
@@ -34,12 +42,22 @@ const getSingleUserFromDB = async (id: string) => {
       `,
     [id],
   );
+
+  if (result.rows.length > 0) {
+    delete result.rows[0].password;
+  }
   return result;
 };
 
 // update user/put
 const updateUserIntoDB = async (payLoad: IUser, id: string) => {
   const { name, gmail, password, is_active, age } = payLoad;
+
+  let hashPassword: string | null = null;
+  if (password) {
+    hashPassword = await bcrypt.hash(password, 10);
+  }
+
   const result = await pool.query(
     `
       UPDATE users SET
@@ -51,8 +69,12 @@ const updateUserIntoDB = async (payLoad: IUser, id: string) => {
       WHERE id = $6
       RETURNING *
       `,
-    [name, gmail, password, is_active, age, id],
+    [name, gmail, hashPassword, is_active, age, id],
   );
+
+  if (result.rows.length > 0) {
+    delete result.rows[0].password;
+  }
   return result;
 };
 
@@ -72,5 +94,5 @@ export const userService = {
   getUsersFromDB,
   getSingleUserFromDB,
   updateUserIntoDB,
-  deleteUserFromDB
+  deleteUserFromDB,
 };

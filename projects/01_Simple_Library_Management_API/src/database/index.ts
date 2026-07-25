@@ -14,7 +14,7 @@ export const initializingDataBase = async () => {
       id SERIAL PRIMARY KEY,
       name VARCHAR(20),
       gmail VARCHAR(20) UNIQUE NOT NULL,
-      password VARCHAR(20),
+      password TEXT,
       is_active BOOLEAN DEFAULT TRUE,
       age INT,
 
