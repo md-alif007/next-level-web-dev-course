@@ -6,11 +6,14 @@ import express, {
 import { usersRouter } from "./modules/users/user.route";
 import { profilesRoute } from "./modules/profiles/profiles.route";
 import { authRoute } from "./modules/auth/auth.route";
+import logger from "./middlewares/logger";
 
 const app: Application = express();
 const port = 5000;
 
 app.use(express.json());
+
+app.use(logger);
 
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({
@@ -21,6 +24,6 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api/users", usersRouter);
 app.use("/api/profiles", profilesRoute);
-app.use("/api/auth",authRoute)
+app.use("/api/auth", authRoute);
 
 export default app;
