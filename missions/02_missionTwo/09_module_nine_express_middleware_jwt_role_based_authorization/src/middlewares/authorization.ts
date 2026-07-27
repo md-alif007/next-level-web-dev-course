@@ -38,7 +38,7 @@ const authorization = (...roles: ROLES[]) => {
       }
 
       // validation 3 : is_active or not
-      if (!user.is_active) {
+      if (!user?.is_active) {
         return res.status(403).json({
           success: false,
           message: "forbidden",

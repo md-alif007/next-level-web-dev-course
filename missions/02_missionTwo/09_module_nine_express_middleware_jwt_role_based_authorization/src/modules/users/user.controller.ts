@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { usersService } from "./user.service";
+import sendResponse from "../../utility/sendResponse";
 
 // post method
 const createUsers = async (req: Request, res: Response) => {
@@ -8,7 +9,8 @@ const createUsers = async (req: Request, res: Response) => {
   try {
     const result = await usersService.creatUsersIntoDB(req.body);
 
-    res.status(200).json({
+    sendResponse(res, {
+      statusCode: 201,
       success: true,
       message: "user created successfully:)",
       data: result.rows[0],
