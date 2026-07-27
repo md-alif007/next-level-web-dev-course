@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { usersController } from "./user.controller";
 import authorization from "../../middlewares/authorization";
+import { USER_ROLE } from "../../types/types";
 
 const router = Router();
 
@@ -8,7 +9,7 @@ const router = Router();
 router.post("/", usersController.createUsers);
 
 // get method
-router.get("/", authorization(), usersController.getUsers);
+router.get("/", authorization(USER_ROLE.admin,USER_ROLE.agent), usersController.getUsers);
 
 // get single method
 router.get("/:id", usersController.getSingleUser);
