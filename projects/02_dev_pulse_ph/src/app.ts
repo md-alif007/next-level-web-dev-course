@@ -3,10 +3,12 @@ import express, {
   type Request,
   type Response,
 } from "express";
-import { userRouter } from "./modules/auth/auth.route";
+import { authRouter } from "./modules/auth/auth.route";
+import { issueRoute } from "./modules/issues/issues.route";
 
 const app: Application = express();
 
+// middleware
 app.use(express.json());
 
 app.get("/", (req: Request, res: Response) => {
@@ -17,8 +19,9 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 // users
-app.use("/api/auth",userRouter)
+app.use("/api/auth", authRouter);
 
-
+// issues
+app.use("/api/issues", issueRoute);
 
 export default app;

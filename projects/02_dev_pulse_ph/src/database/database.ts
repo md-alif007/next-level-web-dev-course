@@ -5,16 +5,6 @@ export const pool = new Pool({
   connectionString: config.connection_string,
 });
 
-/*
-id	Auto-incrementing unique identifier for each account,
-name	Full display name of the team member, must be provided,
-email	Valid login address, must be unique across all accounts, must be provided,
-password	Encrypted string stored securely, must be provided during registration, never returned in responses,
-role	Determines system access level, defaults to contributor, must be contributor or maintainer,
-created_at	Timestamp marking when the account was created, automatically generated on insert,
-updated_at	Timestamp marking when the account was last updated, automatically refreshed on update.
-*/
-
 export const initializingDatabase = async () => {
   try {
     await pool.query(
@@ -31,6 +21,26 @@ export const initializingDatabase = async () => {
     updated_at TIMESTAMP DEFAULT NOW()
     )
     `,
+    );
+
+    await pool.query(
+      `
+      CREATE TABLE IF NOT EXISTS issues 
+      (
+      id SERIAL PRIMARY KEY,
+      title VARCHAR(150) NOT NULL,
+      description TEXT NOT NULL,
+      type TEXT NOT NULL
+        CHECK (type IN ('bug', 'feature_request')),
+      status TEXT NOT NULL DEFAULT 'open'
+        CHECK (status IN ('open', 'in_progress', 'resolved')),
+      reporter_id INT NOT NULL,
+
+      created_at TIMESTAMP DEFAULT NOW(),
+      updated_at TIMESTAMP DEFAULT NOW()
+
+      )
+      `,
     );
     console.log("database connected successfully");
   } catch (error: any) {
