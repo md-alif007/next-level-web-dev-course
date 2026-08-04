@@ -1,6 +1,8 @@
 Project name : DevPulse - Internal Tech Issue and Feature Tracker.(A collaborative platform for software teams to report bugs, suggest features, and coordinate resolutions.)
 
-## Live URL
+## Live URL - > 
+dev-pulse-api-mauve.vercel.app
+
 
 # Features
 
@@ -34,16 +36,16 @@ Project name : DevPulse - Internal Tech Issue and Feature Tracker.(A collaborati
 # API Endpoints
 ## Authentication
 
-POST -> /api/auth/signup -> Register User
-POST -> /api/auth/login -> Login User
+- POST -> /api/auth/signup -> Register User 
+- POST -> /api/auth/login -> Login User
 
 ## Issues
 
-POST -> /api/issues -> Create Issue
-GET -> /api/issues -> Get All Issues
-GET -> /api/issues/:id -> Get Single Issue
-PATCH -> /api/issues/:id -> Update Issue
-DELETE -> /api/issues/:id -> Delete Issue
+- POST -> /api/issues -> Create Issue
+- GET -> /api/issues -> Get All Issues
+- GET -> /api/issues/:id -> Get Single Issue
+- PATCH -> /api/issues/:id -> Update Issue
+- DELETE -> /api/issues/:id -> Delete Issue
 
 
 # Database Schema
@@ -52,24 +54,24 @@ DELETE -> /api/issues/:id -> Delete Issue
 
 Column      Type 
 
-id          SERIAL PRIMARY KEY 
-name        TEXT 
-email       TEXT UNIQUE 
-password    TEXT 
-role        TEXT 
-created_at  TIMESTAMP 
+- id          SERIAL PRIMARY KEY 
+- name        TEXT 
+- email       TEXT UNIQUE 
+- password    TEXT 
+- role        TEXT 
+- created_at  TIMESTAMP 
+- 
 
----
 
 ## issues
 
 Column          Type 
 
-id              SERIAL PRIMARY KEY 
-title           TEXT 
-description     TEXT 
-type            TEXT
-status          TEXT 
-reporter_id     INTEGER ( users.id) 
-created_at      TIMESTAMP 
-updated_at      TIMESTAMP 
+- id              SERIAL PRIMARY KEY 
+- title           TEXT 
+- description     TEXT 
+- type            TEXT
+- status          TEXT 
+- reporter_id     INTEGER ( users.id) 
+- created_at      TIMESTAMP 
+- updated_at      TIMESTAMP 
