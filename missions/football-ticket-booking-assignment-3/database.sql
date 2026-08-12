@@ -140,4 +140,23 @@ VALUES
     (504, 2, 101, NULL, NULL, 150.00),
     (505, 3, 102, 'C-20', 'Pending', 120.00);
 
-    -- 
+--1. Retrieve all upcoming football matches belonging to the 'Champions League' where the match status is 'Available'.
+select
+    match_id,
+    fixture,
+    tournament_category
+from
+    matches
+where
+    tournament_category = 'Champions League'
+    and match_status = 'Available'
+    --2. Search for all users whose full names start with 'Tanvir' or contain the phrase 'Haque' (case-insensitive).
+select
+    user_id,
+    full_name,
+    email
+from
+    users
+where
+    full_name ilike 'tanvir%'
+    or full_name ilike '%haque%'
