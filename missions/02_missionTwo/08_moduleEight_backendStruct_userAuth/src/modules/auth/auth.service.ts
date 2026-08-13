@@ -12,6 +12,7 @@ const loginUserIntoDB = async (payLoad: {
   // 2 . compare the password
   // 3. generate the token
 
+  // 1 . check if the user exists
   const userData = await pool.query(
     `
     SELECT * FROM users WHERE email=$1
@@ -40,7 +41,7 @@ const loginUserIntoDB = async (payLoad: {
   const accessToken = jwt.sign(jwtPayload, config.secret as string, {
     expiresIn: "1d",
   });
-  return {accessToken};
+  return { accessToken };
 };
 
 export const authService = {

@@ -5,7 +5,7 @@ dotenv.config({
     path: path.join(process.cwd(), '.env')
 })
 
-console.log(process.env.CONNECTIONSTRING);
+// console.log(process.env.CONNECTIONSTRING);
 
 const config = {
     connection_string: process.env.CONNECTIONSTRING as string,

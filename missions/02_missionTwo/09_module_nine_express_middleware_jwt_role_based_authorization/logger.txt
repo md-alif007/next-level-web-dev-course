@@ -74,3 +74,15 @@
  Method : POST , url : /api/auth/login , time : 1785151861856
 
  Method : GET , url : /api/users , time : 1785151907320
+
+ Method : GET , url : / , time : 1785217711614
+
+ Method : GET , url : /favicon.ico , time : 1785217712178
+
+ Method : GET , url : / , time : 1785217713544
+
+ Method : GET , url : /api/users , time : 1785217737287
+
+ Method : GET , url : /api/users , time : 1785218813239
+
+ Method : GET , url : / , time : 1785218820433
