@@ -5,6 +5,8 @@ import { CreateUserPayLoad } from "./user.interface";
 
 const createUserIntoDB = async (payLoad: CreateUserPayLoad) => {
   const { name, email, password, profilePhoto } = payLoad;
+
+  // does the user exist with the same email
   const isUserExist = await prisma.user.findUnique({
     where: { email },
   });
@@ -12,11 +14,14 @@ const createUserIntoDB = async (payLoad: CreateUserPayLoad) => {
     throw new Error("user with this email already exists!!");
   }
 
+  // hashing the password
   const hashPassword = await bcrypt.hash(
     password,
+    // salt
     Number(config.bcrypt_salt_rounds),
   );
 
+  // this created user contains name , email , pass and mostly importantly id -> which will be used later . 
   const createdUser = await prisma.user.create({
     data: {
       name,
@@ -25,6 +30,7 @@ const createUserIntoDB = async (payLoad: CreateUserPayLoad) => {
     },
   });
 
+  // creating profile
   await prisma.profile.create({
     data: {
       userId: createdUser.id,
@@ -32,6 +38,7 @@ const createUserIntoDB = async (payLoad: CreateUserPayLoad) => {
     },
   });
 
+  // main user whcich will be shown in db
   const user = await prisma.user.findUnique({
     where: {
       id: createdUser.id,
