@@ -2,6 +2,7 @@ import HttpStatus from "http-status";
 import { NextFunction, Request, Response } from "express";
 import { userService } from "./user.service";
 import { catchAsync } from "../../utils/catchAsync";
+import { sendResponse } from "../../utils/sendResponse";
 
 // normal way
 /*
@@ -37,13 +38,11 @@ const createUser = catchAsync(
 
     const user = await userService.createUserIntoDB(payLoad);
 
-    res.status(HttpStatus.CREATED).json({
-      success: false,
-      successCode: HttpStatus.INTERNAL_SERVER_ERROR,
-      message: "failed to register",
-      data: {
-        user,
-      },
+    sendResponse(res, {
+      success: true,
+      successCode: HttpStatus.CREATED,
+      message: "Registered",
+      data: { user },
     });
   },
 );
