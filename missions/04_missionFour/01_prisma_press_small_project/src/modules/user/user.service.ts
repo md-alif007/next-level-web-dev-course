@@ -21,7 +21,7 @@ const createUserIntoDB = async (payLoad: CreateUserPayLoad) => {
     Number(config.bcrypt_salt_rounds),
   );
 
-  // this created user contains name , email , pass and mostly importantly id -> which will be used later . 
+  // this created user contains name , email , pass and mostly importantly id -> which will be used later .
   const createdUser = await prisma.user.create({
     data: {
       name,
@@ -55,6 +55,22 @@ const createUserIntoDB = async (payLoad: CreateUserPayLoad) => {
   return user;
 };
 
+const getMyProfileFromDB = async (userId: string) => {
+  const user = await prisma.user.findUniqueOrThrow({
+    where: {
+      id: userId,
+    },
+    omit: {
+      password: true,
+    },
+    include: {
+      profile: true,
+    },
+  });
+  return user
+};
+
 export const userService = {
   createUserIntoDB,
+  getMyProfileFromDB,
 };

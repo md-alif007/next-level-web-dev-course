@@ -3,6 +3,9 @@ import { NextFunction, Request, Response } from "express";
 import { userService } from "./user.service";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
+import { jwtUtils } from "../../utils/jwt";
+import config from "../../config/config";
+import { profile } from "node:console";
 
 // normal way
 /*
@@ -47,6 +50,31 @@ const createUser = catchAsync(
   },
 );
 
+const getMyProfile = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { accessToken } = req.cookies;
+
+    const verifyToken = jwtUtils.verifyToken(
+      accessToken,
+      config.jwt_access_secret,
+    );
+
+    if (typeof verifyToken === "string") {
+      throw new Error(verifyToken);
+    }
+
+    const profile = await userService.getMyProfileFromDB(verifyToken.id);
+
+    sendResponse(res, {
+      success: true,
+      successCode: HttpStatus.OK,
+      message: "user profile fetched successfully",
+      data: { profile },
+    });
+  },
+);
+
 export const userController = {
   createUser,
+  getMyProfile,
 };

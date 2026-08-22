@@ -7,6 +7,7 @@ import { authRoute } from "./modules/auth/auth.route";
 
 const app: Application = express();
 
+// cors
 app.use(
   cors({
     origin: config.app_url,
