@@ -52,18 +52,22 @@ const createUser = catchAsync(
 
 const getMyProfile = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { accessToken } = req.cookies;
+    // * its being done in user.route.ts as middleware
+    /* 
+      const { accessToken } = req.cookies;
+      const verifyToken = jwtUtils.verifyToken(
+        accessToken,
+        config.jwt_access_secret,
+      );
 
-    const verifyToken = jwtUtils.verifyToken(
-      accessToken,
-      config.jwt_access_secret,
+      if (typeof verifyToken === "string") {
+        throw new Error(verifyToken);
+      } 
+    */
+
+    const profile = await userService.getMyProfileFromDB(
+      req.user?.id as string,
     );
-
-    if (typeof verifyToken === "string") {
-      throw new Error(verifyToken);
-    }
-
-    const profile = await userService.getMyProfileFromDB(verifyToken.id);
 
     sendResponse(res, {
       success: true,
@@ -74,7 +78,27 @@ const getMyProfile = catchAsync(
   },
 );
 
+const updateMyProfile = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.user?.id as string;
+    const payLoad = req.body;
+
+    const updateProfile = await userService.updateMyProfileIntoDB(
+      userId,
+      payLoad,
+    );
+
+    sendResponse(res, {
+      success: true,
+      successCode: HttpStatus.OK,
+      message: "profile updated !!!",
+      data: { updateProfile },
+    });
+  },
+);
+
 export const userController = {
   createUser,
   getMyProfile,
+  updateMyProfile,
 };
