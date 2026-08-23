@@ -26,6 +26,7 @@ app.get("/", async (req: Request, res: Response) => {
 });
 
 app.use("/api/users", userRouter);
+
 // auth
 app.use("/api/auth", authRoute);
 
