@@ -89,7 +89,7 @@ const getPostByIdFromDB = async (id: string) => {
   return updatedResult;
 };
 
-const updateUserFromDB = async (
+const updatePostFromDB = async (
   userId: string,
   payLoad: IupdatePostPayLoad,
   isAdmin: boolean,
@@ -124,7 +124,26 @@ const updateUserFromDB = async (
   return result;
 };
 
-const deleteUserFromDB = () => {};
+const deletePostFromDB = async (
+  isAdmin: boolean,
+  userId: string,
+  postId: string,
+) => {
+  const post = await prisma.post.findUnique({
+    where: {
+      id: postId,
+    },
+  });
+  if (!isAdmin && post?.userId !== userId) {
+    throw new Error("You are not authorized to update the post");
+  }
+
+  await prisma.post.delete({
+    where: {
+      id: postId,
+    },
+  });
+};
 
 export const postService = {
   createPostIntoDB,
@@ -132,6 +151,6 @@ export const postService = {
   getStatsFromDB,
   getMyPostsFromDB,
   getPostByIdFromDB,
-  updateUserFromDB,
-  deleteUserFromDB,
+  updatePostFromDB,
+  deletePostFromDB,
 };

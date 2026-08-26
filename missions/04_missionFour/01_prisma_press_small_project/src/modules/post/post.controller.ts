@@ -68,14 +68,14 @@ const getPostById = catchAsync(
   },
 );
 
-const updateUser = catchAsync(
+const updatePost = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user?.id;
     const payLoad = req.body;
     const isAdmin = req.user?.role === "ADMIN";
     const postId = req.params.postId;
 
-    const result = await postService.updateUserFromDB(
+    const result = await postService.updatePostFromDB(
       userId as string,
       payLoad,
       isAdmin,
@@ -91,7 +91,26 @@ const updateUser = catchAsync(
   },
 );
 
-const deleteUser = () => {};
+const deletePost = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const isAdmin = req.user?.role === "ADMIN";
+    const userId = req.user?.id;
+    const postId = req.params.postId;
+
+    const result = await postService.deletePostFromDB(
+      isAdmin,
+      userId as string,
+      postId as string,
+    );
+
+    sendResponse(res, {
+      success: true,
+      successCode: HttpStatus.OK,
+      message: "post deleted successfully!!!",
+      data: {},
+    });
+  },
+);
 
 export const postController = {
   createPost,
@@ -99,6 +118,6 @@ export const postController = {
   getStats,
   getMyPosts,
   getPostById,
-  updateUser,
-  deleteUser,
+  updatePost,
+  deletePost,
 };
