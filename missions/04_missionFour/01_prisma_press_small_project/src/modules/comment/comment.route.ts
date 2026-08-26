@@ -9,8 +9,14 @@ router.post("/", auth(ROLE.ADMIN, ROLE.USER), commentController.postComment);
 
 router.get("/:commentId", commentController.getCommentById);
 
-router.get("/:commentId", commentController.getCommentById);
-
 router.get("/user/:userId", commentController.getCommentByUser);
+
+router.patch(
+  "/:commentId",
+  auth(ROLE.ADMIN, ROLE.USER),
+  commentController.updateComment,
+);
+
+router.delete("/:commentId",auth(ROLE.ADMIN, ROLE.USER),commentController.deleteComment)
 
 export const commentRoute = router;

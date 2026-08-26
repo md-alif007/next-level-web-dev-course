@@ -58,8 +58,54 @@ const getCommentByUser = catchAsync(
   },
 );
 
+const updateComment = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const commentId = req.params.commentId;
+    const isAdmin = req.user?.role === "ADMIN";
+    const userId = req.user?.id;
+    const payLoad = req.body;
+
+    const result = await commentService.updateCommentFromDB(
+      commentId as string,
+      userId as string,
+      isAdmin,
+      payLoad,
+    );
+
+    sendResponse(res, {
+      success: true,
+      successCode: HttpStatus.OK,
+      message: "comment updated",
+      data: result,
+    });
+  },
+);
+
+const deleteComment = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const commentId = req.params.commentId;
+    const userId = req.user?.id;
+    const isAdmin = req.user?.role === "ADMIN";
+
+    const result = await commentService.deleteCommentFromDB(
+      commentId as string,
+      userId as string,
+      isAdmin,
+    );
+
+    sendResponse(res, {
+      success: true,
+      successCode: HttpStatus.OK,
+      message: "comment deleted successfully!!!",
+      data: null,
+    });
+  },
+);
+
 export const commentController = {
   postComment,
   getCommentById,
   getCommentByUser,
+  updateComment,
+  deleteComment,
 };
