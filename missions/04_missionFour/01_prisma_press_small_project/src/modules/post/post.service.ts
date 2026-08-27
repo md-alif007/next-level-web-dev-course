@@ -1,3 +1,4 @@
+import { COMMENT_STATUS, POST_STATUS } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import { ICreatePostPayLoad, IupdatePostPayLoad } from "./post.interface";
 
@@ -30,7 +31,59 @@ const getPostsFromDB = async () => {
   return result;
 };
 
-const getStatsFromDB = () => {};
+const getStatsFromDB = async () => {
+  const transactionResult = await prisma.$transaction(async (tx) => {
+    const totalPost = await tx.post.count();
+
+    const totalPublishedPost = await tx.post.count({
+      where: {
+        status: POST_STATUS.PUBLISHED,
+      },
+    });
+    const totalDraftPost = await tx.post.count({
+      where: {
+        status: POST_STATUS.DRAFTED,
+      },
+    });
+    const totalArchivedPost = await tx.post.count({
+      where: {
+        status: POST_STATUS.ARCHIVED,
+      },
+    });
+
+    const totalComments = await tx.comment.count();
+
+    const totalApprovedComment = await tx.comment.count({
+      where: {
+        status: COMMENT_STATUS.APPROVED,
+      },
+    });
+    const totalRejectedComment = await tx.comment.count({
+      where: {
+        status: COMMENT_STATUS.REJECT,
+      },
+    });
+
+    const totalPostViewsAgg = await tx.post.aggregate({
+      _sum: {
+        views: true,
+      },
+    });
+    const totalPostViews = totalPostViewsAgg._sum.views;
+
+    return {
+      totalPost,
+      totalPublishedPost,
+      totalArchivedPost,
+      totalDraftPost,
+      totalComments,
+      totalApprovedComment,
+      totalRejectedComment,
+      totalPostViews,
+    };
+  });
+  return transactionResult;
+};
 
 const getMyPostsFromDB = async (id: string) => {
   const result = await prisma.post.findMany({
@@ -60,12 +113,8 @@ const getMyPostsFromDB = async (id: string) => {
 };
 
 const getPostByIdFromDB = async (id: string) => {
-  const result = await prisma.post.findUniqueOrThrow({
-    where: {
-      id,
-    },
-  });
-
+  // with out transaction
+  /*
   const updatedResult = await prisma.post.update({
     where: {
       id,
@@ -75,6 +124,12 @@ const getPostByIdFromDB = async (id: string) => {
         increment: 1,
       },
     },
+  });
+
+  const post = await prisma.post.findUniqueOrThrow({
+    where: {
+      id,
+    },
     include: {
       user: {
         omit: {
@@ -83,10 +138,66 @@ const getPostByIdFromDB = async (id: string) => {
           email: true,
         },
       },
-      comments: true,
+      comments: {
+        where: {
+          status: COMMENT_STATUS.APPROVED,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
+      _count: {
+        select: {
+          comments: true,
+        },
+      },
     },
   });
-  return updatedResult;
+  */
+
+  // with transaction
+  const transactionResult = await prisma.$transaction(async (tx) => {
+    await tx.post.update({
+      where: {
+        id,
+      },
+      data: {
+        views: {
+          increment: 1,
+        },
+      },
+    });
+
+    const post = await tx.post.findFirstOrThrow({
+      where: {
+        id,
+      },
+      include: {
+        user: {
+          omit: {
+            id: true,
+            password: true,
+            email: true,
+          },
+        },
+        comments: {
+          where: {
+            status: COMMENT_STATUS.APPROVED,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+        _count: {
+          select: {
+            comments: true,
+          },
+        },
+      },
+    });
+    return post;
+  });
+  return transactionResult;
 };
 
 const updatePostFromDB = async (
