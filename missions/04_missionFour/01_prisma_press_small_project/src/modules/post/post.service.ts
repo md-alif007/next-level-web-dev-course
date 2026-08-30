@@ -17,6 +17,48 @@ const createPostIntoDB = async (
 
 const getPostsFromDB = async () => {
   const result = await prisma.post.findMany({
+    // filtering - exact match with multiple object
+    /*
+    where: {
+      AND: [
+        {
+          title: "random18 third post",
+        },
+        {
+          content: "random18 third content",
+        },
+      ],
+    },
+    */
+
+    //searching - partial matching
+    // where: {
+    //   title: {
+    //     contains: "random18" /* case sensitive */,
+    //     mode: "insensitive" /* makes insensitive */,
+    //   },
+    // },
+
+    //searching - partial matching with or operator
+    /*
+    where: {
+      OR: [
+        {
+          title: {
+            contains: "random18",
+            mode: "insensitive",
+          },
+        },
+        {
+          content: {
+            contains: "first content",
+            mode: "insensitive",
+          },
+        },
+      ],
+    },
+    */
+
     include: {
       user: {
         omit: {
