@@ -17,7 +17,7 @@ const createPostIntoDB = async (
 
 const getPostsFromDB = async () => {
   const result = await prisma.post.findMany({
-    // filtering - exact match with multiple object
+    // filtering - exact match with and operator
     /*
     where: {
       AND: [
@@ -32,12 +32,14 @@ const getPostsFromDB = async () => {
     */
 
     //searching - partial matching
-    // where: {
-    //   title: {
-    //     contains: "random18" /* case sensitive */,
-    //     mode: "insensitive" /* makes insensitive */,
-    //   },
-    // },
+    /*
+    where: {
+       title: {
+         contains: "random18",  // case sensitive 
+         mode: "insensitive", // makes insensitive 
+       },
+    },
+    */
 
     //searching - partial matching with or operator
     /*
@@ -56,6 +58,72 @@ const getPostsFromDB = async () => {
           },
         },
       ],
+    },
+    */
+
+    // searching / partial match with or operataor
+    /*
+    where: {
+      OR: [
+        {
+          title: {
+            contains: "FIRST",
+            mode: "insensitive",
+          },
+        },
+        {
+          content: {
+            contains: "second",
+            mode: "insensitive",
+          },
+        },
+      ],
+    },
+    */
+
+    // combining search(OR) and filtering(AND)
+    /*
+    where: {
+      AND: [
+        {
+          OR: [
+            {
+              title: {
+                contains: "first",
+                mode: "insensitive",
+              },
+            },
+
+            {
+              content: {
+                contains: "first",
+                mode: "insensitive",
+              },
+            },
+          ],
+        },
+
+        {
+          title: "first post",
+        },
+        {
+          content: "first content",
+        },
+      ],
+    },
+    */
+
+    /*
+    take: 2,
+    skip: 2,
+    */
+    // formula of skip : (page - 1) * limit
+
+    // sorting asc and desc
+    /*
+    orderBy: {
+      createdAt: "asc",
+      title: "desc",
     },
     */
 
