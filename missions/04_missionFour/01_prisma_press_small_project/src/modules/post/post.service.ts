@@ -1,6 +1,12 @@
+import { title } from "node:process";
 import { COMMENT_STATUS, POST_STATUS } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
-import { ICreatePostPayLoad, IupdatePostPayLoad } from "./post.interface";
+import {
+  ICreatePostPayLoad,
+  IPostQuery,
+  IupdatePostPayLoad,
+} from "./post.interface";
+import { PostWhereInput } from "../../../generated/prisma/models";
 
 const createPostIntoDB = async (
   payLoad: ICreatePostPayLoad,
@@ -15,7 +21,50 @@ const createPostIntoDB = async (
   return result;
 };
 
-const getPostsFromDB = async () => {
+const getPostsFromDB = async (query: IPostQuery) => {
+  const limit = query.limit ? Number(query.limit) : 10;
+  const page = query.page ? Number(query.page) : 1;
+  const skip = (page - 1) * limit;
+
+  const andConditions: PostWhereInput[] = [];
+
+  if (query.searchTerm) {
+    andConditions.push({
+      OR: [
+        {
+          title: {
+            contains: query.searchTerm,
+            mode: "insensitive",
+          },
+        },
+        {
+          content: {
+            contains: query.searchTerm,
+            mode: "insensitive",
+          },
+        },
+      ],
+    });
+  }
+
+  if (query.title) {
+    andConditions.push({
+      title: query.title,
+    });
+  }
+
+  if (query.content) {
+    andConditions.push({
+      content: query.content,
+    });
+  }
+
+  if (query.isFeatured) {
+    andConditions.push({
+      isFeatured: Boolean(query.isFeatured),
+    });
+  }
+
   const result = await prisma.post.findMany({
     // filtering - exact match with and operator
     /*
@@ -113,6 +162,7 @@ const getPostsFromDB = async () => {
     },
     */
 
+    // paginatin
     /*
     take: 2,
     skip: 2,
@@ -126,6 +176,45 @@ const getPostsFromDB = async () => {
       title: "desc",
     },
     */
+
+    // dynamic searching and filtering
+    /*
+    where: {
+      AND: [
+        query.searchTerm
+          ? {
+              OR: [
+                {
+                  title: {
+                    contains: query.searchTerm,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  content: {
+                    contains: query.searchTerm,
+                    mode: "insensitive",
+                  },
+                },
+              ],
+            }
+          : {},
+
+        // title filtering
+        query.title ? { title: query.title } : {},
+        // content filtering
+        query.content ? { content: query.content } : {},
+      ],
+    },
+    */
+
+    where: {
+      AND: andConditions,
+    },
+
+    // pagination
+    take: limit,
+    skip: skip,
 
     include: {
       user: {
