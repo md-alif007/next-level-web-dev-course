@@ -19,3 +19,9 @@ enum COMMENT_STATUS {
     APPROVED
     REJECT
 }
+
+enum SUBS_STATUS {
+    ACTIVE
+    EXPIRED
+    CANCELED
+}

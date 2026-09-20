@@ -1,0 +1,14 @@
+model Subs {
+    id String @id @default(uuid())
+
+    userId String @unique
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    subsStatus SUBS_STATUS @default(ACTIVE)
+
+    currentPeriodEnd DateTime
+    createdAt        DateTime @default(now())
+    updatedAt        DateTime
+
+    @@map("subs")
+}
