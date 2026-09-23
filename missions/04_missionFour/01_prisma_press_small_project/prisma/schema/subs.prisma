@@ -1,17 +1,18 @@
 model Subs {
-    id String @id @default(uuid())
+    id         String      @id @default(uuid())
+    subsStatus SUBS_STATUS @default(ACTIVE)
 
     userId String @unique
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    subsStatus SUBS_STATUS @default(ACTIVE)
-
     // stripe customer id
-    stripeCustomerId String @unique
+    stripeCustomerId     String   @unique
+    // stripe subs id
+    stripeSubscriptionId String   @unique
+    currentPeriodEnd     DateTime
 
-    currentPeriodEnd DateTime
-    createdAt        DateTime @default(now())
-    updatedAt        DateTime
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
     @@map("subs")
 }
