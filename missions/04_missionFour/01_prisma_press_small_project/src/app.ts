@@ -21,8 +21,8 @@ app.use(
   }),
 );
 
-const endpointSecret = config.stripe_webhook_secret;
-app.post(
+// const endpointSecret = config.stripe_webhook_secret;
+/*app.post(
   "/api/subscription/webhook",
   express.raw({ type: "application/json" }),
   (request, response) => {
@@ -70,6 +70,9 @@ app.post(
     response.send();
   },
 );
+*/
+
+app.use("/api/subscription/webhook", express.raw({ type: "application/json" }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

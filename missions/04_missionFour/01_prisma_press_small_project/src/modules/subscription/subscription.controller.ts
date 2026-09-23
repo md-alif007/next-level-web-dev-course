@@ -21,6 +21,16 @@ const createCheckOutSession = catchAsync(
   },
 );
 
+const handleWebhook = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const event = req.body as Buffer;
+    const signature = req.headers["stripe-signature"]!;
+
+    await subscriptionServices.handleWebhook(event, signature as string);
+  },
+);
+
 export const subscriptionController = {
   createCheckOutSession,
+  handleWebhook,
 };
