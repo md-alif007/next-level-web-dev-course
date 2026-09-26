@@ -1,4 +1,3 @@
-import { title } from "node:process";
 import { COMMENT_STATUS, POST_STATUS } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import {
@@ -12,6 +11,15 @@ const createPostIntoDB = async (
   payLoad: ICreatePostPayLoad,
   user_id: string,
 ) => {
+  const user = await prisma.user.findUniqueOrThrow({
+    where: {
+      id: user_id,
+    },
+    include: {
+      subscription: true,
+    },
+  });
+
   const result = await prisma.post.create({
     data: {
       ...payLoad,
@@ -64,6 +72,10 @@ const getPostsFromDB = async (query: IPostQuery) => {
       isFeatured: Boolean(query.isFeatured),
     });
   }
+
+  andConditions.push({
+    isPremium: false,
+  });
 
   const result = await prisma.post.findMany({
     // filtering - exact match with and operator
@@ -429,6 +441,7 @@ const getPostByIdFromDB = async (id: string) => {
     const post = await tx.post.findFirstOrThrow({
       where: {
         id,
+        isPremium: false,
       },
       include: {
         user: {
